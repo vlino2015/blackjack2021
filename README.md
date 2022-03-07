@@ -113,6 +113,24 @@ Write a function to shuffle the deck. Here are some strategies for shuffling the
 
 Use the shuffle function to shuffle the deck when you hit the deal button but before you deal the cards.
 
+```js
+/**
+ * Randomize array element order in-place.
+ * Using Durstenfeld shuffle algorithm.
+ */
+
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
+
+```
+
 ## Step 11: Calculate points for a hand
 Write a function `calculatePoints` that takes in an array of card objects and returns the points for that hand. Example:
 
