@@ -362,18 +362,22 @@ let imageDealer = document.querySelector('#dealer-hand');
 let imagePlayer = document.querySelector('#player-hand');
 let dealerPoint = document.querySelector('#dealer-points');
 let playerPoint = document.querySelector('#player-points');
+let hitButton = document.querySelector('#hit-button');
+let standButton = document.querySelector('#stand-button');
+let gameOver = document.querySelector('#game-over');
+let deck = deckOfCards;
+let pPoint=0;
+let dPoint= 0;
+
 
 
 //add eventListener to deal button
-
+let run = true;
 let dealerArr =[];
 let playerArr =[];
 
 
 dealButton.addEventListener('click', ()=>{
-    let deck = deckOfCards
-    
-    
   
     // console.log(deck);
     for (let i = 0; i < 2; i++) {
@@ -388,11 +392,9 @@ dealButton.addEventListener('click', ()=>{
         dealerArr.push(randomCard2);
 
       }
-      //adding points onto the screen
-      //dealer first
 
-      let dPoint= '';
-    //   console.log(dealerArr)
+      //adding points onto the screen
+      //dealer point
     if(dealerArr.some(card => card.card === "ace")){
         if(dealerArr[0].card === "ace" && dealerArr[1].card !== "ace"){
             dPoint = dealerArr[0].value2 + dealerArr[1].value
@@ -404,7 +406,6 @@ dealButton.addEventListener('click', ()=>{
     }else{
     
       dPoint= dealerArr[0].value + dealerArr[1].value
-    //   console.log(dPoint)
      
     }
 
@@ -412,8 +413,8 @@ dealButton.addEventListener('click', ()=>{
   
 
 
-    //player next
-    let pPoint='';
+    //player point
+   
     if(playerArr.some(card => card.card === "ace")){
         if(playerArr[0].card === "ace" && playerArr[1].card !== "ace"){
             pPoint = playerArr[0].value2 + playerArr[1].value
@@ -425,13 +426,11 @@ dealButton.addEventListener('click', ()=>{
     }else{
     
       pPoint= playerArr[0].value + playerArr[1].value
-    //   console.log(dPoint)
      
     }
 
     playerPoint.innerHTML=pPoint
-    
-    
+
     
     //add the card picture onto the screen
 
@@ -441,7 +440,104 @@ dealButton.addEventListener('click', ()=>{
         for(let i=0; i < playerArr.length; i++){
             imagePlayer.innerHTML += `<img src="${playerArr[i].image}" alt="">`
         }
+
+
+    //player points =21 for the first round, win
+    if(pPoint===21){
+        gameOver.innerHTML = "Player win! Game is over!"
         
-    // run = false;
+    }
+        
+    
+})
+
+
+
+
+//add evenListener to hit button
+
+hitButton.addEventListener('click',()=>{
+
+    //draw one card from the deck
+    let randomCard = deck[Math.floor(Math.random()*deck.length)];
+    let index = deck.findIndex(d => d===randomCard)
+    deck.splice(index,1);
+    playerArr.push(randomCard);
+    // console.log(playerArr.slice(-1))
+
+
+    //display the card on the screen and add points on to Player screen
+    let latestCard = playerArr.slice(-1)
+    // console.log(latestCard);
+   for(let i= (playerArr.length -1); i < playerArr.length; i++){
+    imagePlayer.innerHTML += `<img src="${playerArr[i].image}" alt="">`
+
+    console.log(playerArr[i].card)
+    if(playerArr[i].card == 'ace'){
+        if(pPoint<=10){
+            pPoint+= playerArr[i].value2;
+        }else{
+            pPoint+= playerArr[i].value1;
+        }
+    }else{
+        pPoint+= playerArr[i].value;
+    }
+    playerPoint.innerHTML=pPoint
+   }
+
+   if(pPoint>21){
+    gameOver.innerHTML = "Player bust! Game is over. Player lost!"
+
+
+   }
 
 })
+
+
+//add evenListener to stand button
+standButton.addEventListener('click', ()=>{
+    //draw one more card or not
+    if(dPoint<=16){
+        
+        let randomCard = deck[Math.floor(Math.random()*deck.length)];
+        let index = deck.findIndex(d => d===randomCard)
+        deck.splice(index,1);
+        dealerArr.push(randomCard);
+
+        //display the card on the screen and add points on to Player screen
+        let latestCard = dealerArr.slice(-1);
+        for(let i= (dealerArr.length -1); i < dealerArr.length; i++){
+            imageDealer.innerHTML += `<img src="${dealerArr[i].image}" alt="">`
+        
+            // console.log(playerArr[i].card)
+            if(dealerArr[i].card == 'ace'){
+                if(dPoint<=10){
+                    dPoint+= dealerArr[i].value2;
+                }else{
+                    dPoint+= dealerArr[i].value1;
+                }
+            }else{
+                dPoint+= dealerArr[i].value;
+            }
+            dealerPoint.innerHTML=dPoint
+            if(dPoint > 21){
+                gameOver.innerHTML = "Dealer bust! Player win! Game over."
+            }
+           }
+
+
+    }else{
+        if(dPoint > pPoint){
+            if(dpoint<=21){
+            gameOver.innerHTML = "Dealer win! Game over."
+            }else{
+                gameOver.innerHTML = "Dealer bust! Player win! Game over."
+            }
+        }else{
+            gameOver.innerHTML = "Player win! Game over."
+        }
+    }
+
+})
+
+
