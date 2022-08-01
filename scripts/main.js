@@ -356,7 +356,7 @@ let deckOfCards = [
      },
 
 ]
-
+let dealerbackground = {"image": 'images/backgroundcard.png' };
 let dealButton = document.querySelector('#deal-button');
 let imageDealer = document.querySelector('#dealer-hand');
 let imagePlayer = document.querySelector('#player-hand');
@@ -379,7 +379,6 @@ let playerArr =[];
 
 dealButton.addEventListener('click', ()=>{
   
-    // console.log(deck);
     for (let i = 0; i < 2; i++) {
         let randomCard = deck[Math.floor(Math.random()*deck.length)];
         let index = deck.findIndex(d => d===randomCard)
@@ -390,6 +389,7 @@ dealButton.addEventListener('click', ()=>{
         let index2 = deck.findIndex(d => d===randomCard)
         deck.splice(index2,1);
         dealerArr.push(randomCard2);
+        console.log(dealerArr)
 
       }
 
@@ -408,8 +408,8 @@ dealButton.addEventListener('click', ()=>{
       dPoint= dealerArr[0].value + dealerArr[1].value
      
     }
-
-    dealerPoint.innerHTML=dPoint
+    console.log(dPoint)
+   
   
 
 
@@ -434,9 +434,10 @@ dealButton.addEventListener('click', ()=>{
     
     //add the card picture onto the screen
 
-        for(let i=0; i < dealerArr.length; i++){
-            imageDealer.innerHTML += `<img src="${dealerArr[i].image}" alt="">`
-        }
+        
+        imageDealer.innerHTML += `<img src="${dealerArr[0].image}" alt="">`
+        imageDealer.innerHTML += `<img src="${dealerbackground.image}" alt=""></img>`
+        
         for(let i=0; i < playerArr.length; i++){
             imagePlayer.innerHTML += `<img src="${playerArr[i].image}" alt="">`
         }
@@ -463,12 +464,11 @@ hitButton.addEventListener('click',()=>{
     let index = deck.findIndex(d => d===randomCard)
     deck.splice(index,1);
     playerArr.push(randomCard);
-    // console.log(playerArr.slice(-1))
 
 
     //display the card on the screen and add points on to Player screen
     let latestCard = playerArr.slice(-1)
-    // console.log(latestCard);
+    
    for(let i= (playerArr.length -1); i < playerArr.length; i++){
     imagePlayer.innerHTML += `<img src="${playerArr[i].image}" alt="">`
 
@@ -488,28 +488,33 @@ hitButton.addEventListener('click',()=>{
    if(pPoint>21){
     gameOver.innerHTML = "Player bust! Game is over. Player lost!"
 
-
    }
 
 })
+
+
 
 
 //add evenListener to stand button
 standButton.addEventListener('click', ()=>{
     //draw one more card or not
     if(dPoint<=16){
+        console.log(dPoint)
         
         let randomCard = deck[Math.floor(Math.random()*deck.length)];
         let index = deck.findIndex(d => d===randomCard)
         deck.splice(index,1);
         dealerArr.push(randomCard);
+        console.log(dealerArr)
 
         //display the card on the screen and add points on to Player screen
-        let latestCard = dealerArr.slice(-1);
-        for(let i= (dealerArr.length -1); i < dealerArr.length; i++){
-            imageDealer.innerHTML += `<img src="${dealerArr[i].image}" alt="">`
         
-            // console.log(playerArr[i].card)
+        imageDealer.innerHTML = "";
+        for(let i= 0; i < dealerArr.length; i++){
+            
+            imageDealer.innerHTML += `<img src="${dealerArr[i].image}" alt="">`}
+        
+        for(let i =2; i < dealerArr. length; i++){
             if(dealerArr[i].card == 'ace'){
                 if(dPoint<=10){
                     dPoint+= dealerArr[i].value2;
@@ -519,23 +524,41 @@ standButton.addEventListener('click', ()=>{
             }else{
                 dPoint+= dealerArr[i].value;
             }
-            dealerPoint.innerHTML=dPoint
+        }
+            dealerPoint.innerHTML=dPoint 
             if(dPoint > 21){
                 gameOver.innerHTML = "Dealer bust! Player win! Game over."
+            }else{
+                if(dPoint> pPoint){
+                    gameOver.innerHTML = "Dealer win! Game over."
+                }else if(dPoint==pPoint){
+                    gameOver.innerHTML = "It's a tie."
+                }else{
+                    gameOver.innerHTML = "Player win! Game over."
+                }
             }
-           }
-
-
+           
+            //   dealerPoint.innerHTML=dPoint
     }else{
+        imageDealer.innerHTML = "";
+        for(let i= 0; i < dealerArr.length; i++){
+            
+            imageDealer.innerHTML += `<img src="${dealerArr[i].image}" alt="">`}
+
         if(dPoint > pPoint){
-            if(dpoint<=21){
+            
+            if(dPoint<=21){
             gameOver.innerHTML = "Dealer win! Game over."
             }else{
                 gameOver.innerHTML = "Dealer bust! Player win! Game over."
             }
+        }else if(dPoint==pPoint){
+            gameOver.innerHTML = "It's a tie."
         }else{
             gameOver.innerHTML = "Player win! Game over."
         }
+
+        dealerPoint.innerHTML=dPoint
     }
 
 })
